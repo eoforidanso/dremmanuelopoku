@@ -595,30 +595,51 @@ code {
 }
 
 .footer-inner {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 1.8rem;
-  align-items: start;
+  text-align: center;
 }
 
-.footer-brand { display: flex; gap: 0.9rem; align-items: center; }
-.footer-brand img { width: 48px; height: 50px; object-fit: contain; mix-blend-mode: screen; }
+.footer-brand { display: flex; gap: 0.9rem; align-items: center; text-align: left; }
+.footer-brand img { width: 48px; height: 50px; object-fit: contain; mix-blend-mode: screen; flex: none; }
 .footer-brand p { margin: 0; }
 .footer-brand strong { color: var(--ink); }
 
-.footer-nav { display: grid; gap: 0.5rem; align-content: start; }
-.footer-nav a { color: var(--ink-soft); text-decoration: none; }
+.footer-nav {
+  display: flex; flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 1.6rem;
+}
+
+.footer-nav a {
+  color: var(--ink-soft); text-decoration: none;
+  padding: 0.45rem 0;
+  font-size: 0.9rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+
 .footer-nav a:hover { color: var(--gold-400); }
 
 .footer-contact { margin: 0; }
-.muted { color: var(--ink-mute); font-size: 0.82rem; }
+.footer-contact a { font-weight: 600; word-break: break-word; }
 
-.copyright {
+.muted {
+  color: var(--ink-mute);
+  font-size: 0.74rem; letter-spacing: 0.2em; text-transform: uppercase;
+}
+
+.footer-base {
   width: var(--shell); margin: 2.4rem auto 0;
   padding-top: 1.2rem;
   border-top: 1px solid var(--line-soft);
-  font-size: 0.78rem; color: var(--ink-mute); text-align: center;
+  text-align: center;
 }
+
+.copyright { margin: 0 0 0.5rem; font-size: 0.78rem; color: var(--ink-mute); }
+
+.credit { margin: 0; font-size: 0.78rem; color: var(--ink-mute); letter-spacing: 0.04em; }
+.credit strong { color: var(--gold-400); font-weight: 700; letter-spacing: 0.06em; }
 
 /* ── Motion ──────────────────────────────────────────────────────────── */
 
@@ -672,4 +693,7 @@ code {
   }
 
   .nav-menu a.btn { margin-top: 0.8rem; justify-content: center; }
+
+  .footer-brand { flex-direction: column; text-align: center; gap: 0.6rem; }
+  .footer-nav { gap: 0.2rem 1.2rem; }
 }
