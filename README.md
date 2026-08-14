@@ -10,9 +10,15 @@ site/
 ├── styles.css      navy + gold brand styling
 ├── script.js       mobile menu, scroll reveal, pledge form
 └── assets/
-    ├── poster.jpg    the original campaign poster
-    ├── portrait.jpg  portrait cropped from the poster
-    └── crest.jpg     OWASS crest cropped from the poster
+    ├── poster.jpg     the original campaign poster
+    ├── portrait.jpg   studio headshot, cropped 4:5
+    ├── crest.jpg      OWASS crest cropped from the poster
+    ├── court.jpg      multipurpose court on the OWASS campus
+    ├── boulevard.jpg  the Akatakyie USA Boulevard sign
+    ├── campus.jpg     members on campus in Kumasi
+    ├── chapter.jpg    a chapter gathering
+    ├── reunion.jpg    a reunion group photograph
+    └── gala.jpg       a fundraising dinner
 ```
 
 ## Preview it locally
@@ -29,16 +35,17 @@ Everything below is a placeholder. Nothing on the page invents facts about the c
 
 1. **Campaign email** — `campaign@example.org` appears twice: in `script.js`
    (`CAMPAIGN_EMAIL`, where the pledge form sends) and in the footer of `index.html`.
-2. **Biography** — the dashed box in the *About* section. Years at OWASS and house,
-   profession, family, and service already given to Akatakyie.
-3. **The first hundred days** — the six commitments in the *Plan* section are a sensible
+2. **The first hundred days** — the six commitments in the *Plan* section are a sensible
    draft, not the campaign's manifesto. Replace them with the real platform.
-4. **Endorsements** — three empty slots in the *Voices* section. Only publish quotes the
+3. **Endorsements** — three empty slots in the *Voices* section. Only publish quotes the
    person has agreed to in writing.
-5. **Delete the two grey `.note` lines** (in *Plan* and *Voices*) once the content is real —
+4. **Delete the two grey `.note` lines** (in *Plan* and *Voices*) once the content is real —
    they are editing reminders, not page copy.
-6. **Photography** — the portrait and crest are cropped out of the poster JPEG, so they are
-   soft at large sizes. Swap in the original photograph and a clean crest file if you have them.
+5. **Gallery captions** — the six photographs in the *Record* section are captioned by occasion,
+   not by person, because nobody has confirmed who is in each frame. Add names, dates and places
+   once the campaign can verify them.
+6. **The crest** — still a crop out of the poster JPEG, so it is soft at large sizes. Swap in a
+   clean crest file if you have one.
 
 ## Build
 
