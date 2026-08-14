@@ -10,9 +10,8 @@ site/
 ├── styles.css      navy + gold brand styling
 ├── script.js       mobile menu, scroll reveal, pledge form
 └── assets/
-    ├── poster.jpg     the original campaign poster
     ├── portrait.jpg   studio headshot, cropped 4:5
-    ├── crest.jpg      OWASS crest cropped from the poster
+    ├── crest.jpg      OWASS crest, cropped from the original campaign poster
     ├── court.jpg      multipurpose court on the OWASS campus
     ├── boulevard.jpg  the Akatakyie USA Boulevard sign
     ├── campus.jpg     members on campus in Kumasi
@@ -44,8 +43,8 @@ Everything below is a placeholder. Nothing on the page invents facts about the c
 5. **Gallery captions** — the six photographs in the *Record* section are captioned by occasion,
    not by person, because nobody has confirmed who is in each frame. Add names, dates and places
    once the campaign can verify them.
-6. **The crest** — still a crop out of the poster JPEG, so it is soft at large sizes. Swap in a
-   clean crest file if you have one.
+6. **The crest** — still a crop out of the campaign poster, so it is soft at large sizes. Swap
+   in a clean crest file if you have one.
 
 ## Build
 

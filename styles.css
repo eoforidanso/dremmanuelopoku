@@ -28,6 +28,7 @@
 
   --display: "Helvetica Neue", "Arial Black", Helvetica, Arial, system-ui, sans-serif;
   --body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --serif: "Source Serif 4", "Source Serif Pro", Georgia, "Iowan Old Style", "Times New Roman", serif;
 
   color-scheme: dark;
 }
@@ -380,20 +381,16 @@ code {
 
 .about { background: var(--navy-800); }
 
-.about-grid {
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: clamp(1.5rem, 5vw, 4rem);
-  align-items: start;
+/* The bio is the one long read on the page, so it gets a serif and a little
+   more air than the rest of the site. Headings, the creed and the facts list
+   stay on the display/body sans. */
+.bio {
+  margin-top: 1.6rem;
+  font-family: var(--serif);
+  font-size: clamp(1.06rem, 1rem + 0.32vw, 1.2rem);
+  line-height: 1.75;
+  max-width: 62ch;
 }
-
-.about-photo img {
-  border-radius: var(--radius);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-}
-
-.bio { margin-top: 1.6rem; }
 
 .bio h3 {
   margin: 2rem 0 0.7rem;
@@ -421,11 +418,11 @@ code {
   margin: 1.4rem 0 0;
   padding-left: 1.1rem;
   border-left: 3px solid var(--gold-400);
-  font-family: var(--display);
-  font-size: clamp(1.1rem, 1rem + 0.6vw, 1.4rem);
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 1.02rem + 0.62vw, 1.45rem);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.4;
   color: var(--ink);
   text-wrap: balance;
 }
@@ -750,8 +747,7 @@ code {
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
   .hero-photo { order: -1; max-width: 380px; }
-  .about-grid, .join-grid { grid-template-columns: 1fr; }
-  .about-photo { max-width: 420px; margin-inline: auto; }
+  .join-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: repeat(2, 1fr); }
   .shot.wide { grid-column: span 2; }
 }
