@@ -5,30 +5,62 @@
    ========================================================================== */
 
 :root {
-  --navy-900: #050b1e;
-  --navy-800: #08122c;
-  --navy-700: #0c1a3d;
-  --navy-600: #12234e;
-  --navy-500: #1b2f63;
+  /* ── Colour ────────────────────────────────────────────────────────
+     Three decisions, and everything else is derived from them:
+     one navy, one gold, one neutral. Surfaces are the same navy lifted
+     in fixed steps — not new hues — so the page reads as one material. */
+  --navy:  #050b1e;   /* primary   */
+  --gold:  #f7c249;   /* accent    */
+  --paper: #f4f7fd;   /* neutral   */
 
-  --gold-400: #f7c249;
+  --surface-0: var(--navy);
+  --surface-1: #08122c;
+  --surface-2: #0c1a3d;
+  --surface-3: #12234e;
+  --surface-4: #1b2f63;
+
+  /* Text is the neutral at three strengths. Gold is never body text. */
+  --ink:      var(--paper);
+  --ink-soft: rgba(244, 247, 253, 0.76);
+  --ink-mute: rgba(244, 247, 253, 0.52);
+
+  /* The accent, shaded only where a gradient needs depth. */
+  --on-gold: #21160a;   /* text on the accent */
+  --gold-400: var(--gold);
   --gold-500: #eda92c;
   --gold-600: #d08e15;
 
-  --ink: #ffffff;
-  --ink-soft: #cdd7ea;
-  --ink-mute: #93a2bf;
+  --line:      rgba(247, 194, 73, 0.22);
+  --line-soft: rgba(244, 247, 253, 0.13);
 
-  --line: rgba(247, 194, 73, 0.22);
-  --line-soft: rgba(205, 215, 234, 0.14);
+  /* Legacy aliases, kept so older rules resolve to the same surfaces. */
+  --navy-900: var(--surface-0);
+  --navy-800: var(--surface-1);
+  --navy-700: var(--surface-2);
+  --navy-600: var(--surface-3);
+  --navy-500: var(--surface-4);
+
+  /* ── Type ──────────────────────────────────────────────────────────
+     Serif carries authority and takes every headline. Sans carries the
+     reading. Display is held back for the poster voice: the hero
+     lockup and the slogan band, nowhere else. */
+  --serif:   "Source Serif 4", "Source Serif Pro", Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --body:    system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --display: "Helvetica Neue", "Arial Black", Helvetica, Arial, system-ui, sans-serif;
+
+  /* One scale, ~1.25 ratio, fluid between phone and desktop. */
+  --t-hero:  clamp(3.4rem, 1rem + 9.4vw, 7rem);
+  --t-1:     clamp(2rem, 1.25rem + 3.1vw, 3.5rem);
+  --t-2:     clamp(1.6rem, 1.2rem + 1.7vw, 2.3rem);
+  --t-3:     clamp(1.15rem, 1.05rem + 0.45vw, 1.4rem);
+  --t-lede:  clamp(1.08rem, 1rem + 0.45vw, 1.32rem);
+  --t-body:  clamp(1rem, 0.96rem + 0.2vw, 1.075rem);
+  --t-small: 0.9rem;
+  --t-micro: 0.75rem;
 
   --shell: min(1180px, 100% - 2.5rem);
   --radius: 18px;
   --shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.9);
-
-  --display: "Helvetica Neue", "Arial Black", Helvetica, Arial, system-ui, sans-serif;
-  --body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --serif: "Source Serif 4", "Source Serif Pro", Georgia, "Iowan Old Style", "Times New Roman", serif;
 
   color-scheme: dark;
 }
@@ -42,7 +74,7 @@ body {
   background: var(--navy-900);
   color: var(--ink-soft);
   font-family: var(--body);
-  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.075rem);
+  font-size: var(--t-body);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -53,16 +85,16 @@ img { max-width: 100%; height: auto; display: block; }
 a { color: var(--gold-400); }
 
 h1, h2, h3 {
-  font-family: var(--display);
+  font-family: var(--serif);
   color: var(--ink);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
   margin: 0 0 0.5em;
   text-wrap: balance;
 }
 
-h2 { font-size: clamp(1.9rem, 1.3rem + 2.6vw, 3.1rem); font-weight: 800; }
-h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.01em; }
+h2 { font-size: var(--t-1); font-weight: 600; }
+h3 { font-size: var(--t-3); font-weight: 600; letter-spacing: 0; line-height: 1.25; }
 
 p { margin: 0 0 1.1em; }
 
@@ -138,20 +170,44 @@ p { margin: 0 0 1.1em; }
   text-transform: uppercase; color: var(--gold-400);
 }
 
-.nav-menu { display: flex; align-items: center; gap: 1.6rem; }
+.nav-menu { display: flex; align-items: center; gap: 2.15rem; }
 
 .nav-menu a {
+  position: relative;
   color: var(--ink-soft); text-decoration: none;
-  font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em;
+  font-size: 0.82rem; font-weight: 600; letter-spacing: 0.13em;
   text-transform: uppercase;
-  padding: 0.4rem 0;
-  border-bottom: 2px solid transparent;
+  padding: 0.45rem 0;
+  transition: color 0.2s ease;
+}
+
+/* The underline grows from the left rather than blinking on. */
+.nav-menu a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: var(--gold-400);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.24s ease;
 }
 
 .nav-menu a:hover { color: var(--ink); }
-.nav-menu a.is-active { color: var(--gold-400); border-bottom-color: var(--gold-400); }
-.nav-menu a.btn { border-bottom: 0; }
-.nav-menu a.btn.is-active { color: var(--navy-900); }
+.nav-menu a:hover::after { transform: scaleX(1); }
+.nav-menu a.is-active { color: var(--gold-400); }
+.nav-menu a.is-active::after { transform: scaleX(1); }
+.nav-menu a.btn::after { display: none; }
+
+/* .nav-menu a is more specific than .btn-gold, so the pill has to be told
+   again that its text is dark — otherwise it inherits the light nav colour
+   and lands at about 1.8:1 on gold. The nav's wider tracking is dropped
+   here too, which is what pushed the label out past the pill. */
+.nav-menu a.btn,
+.nav-menu a.btn.is-active {
+  color: var(--on-gold);
+  letter-spacing: 0.06em;
+}
 
 .nav-toggle {
   display: none;
@@ -190,7 +246,7 @@ p { margin: 0 0 1.1em; }
 
 .btn-gold {
   background: linear-gradient(160deg, var(--gold-400), var(--gold-600));
-  color: #21160a;
+  color: var(--on-gold);
   box-shadow: 0 14px 30px -16px rgba(237, 169, 44, 0.9);
 }
 
@@ -199,7 +255,35 @@ p { margin: 0 0 1.1em; }
 .btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
 .btn-ghost:hover { border-color: var(--gold-400); color: var(--gold-400); transform: translateY(-2px); }
 
-.btn-sm { min-height: 42px; padding: 0 1.15rem; font-size: 0.8rem; }
+/* The secondary action sits beside the primary without competing with it:
+   no pill, no border — a text link with a rule that fills in on hover. */
+.btn-quiet {
+  min-height: 48px;
+  padding: 0 0.15rem;
+  background: none;
+  border: 0;
+  color: var(--ink-soft);
+  letter-spacing: 0.12em;
+  position: relative;
+}
+
+.btn-quiet::after {
+  content: "";
+  position: absolute;
+  left: 0.15rem; right: 0.15rem; bottom: 12px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.42;
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.btn-quiet:hover { color: var(--gold-400); transform: none; }
+.btn-quiet:hover::after { opacity: 1; }
+
+.btn-lg { min-height: 58px; padding: 0 2.3rem; font-size: 1rem; letter-spacing: 0.08em; }
+.btn-sm { min-height: 46px; padding: 0 1.35rem; font-size: 0.82rem; }
 .btn-block { width: 100%; }
 
 /* ── Hero ────────────────────────────────────────────────────────────── */
@@ -229,72 +313,127 @@ p { margin: 0 0 1.1em; }
 }
 
 .crest {
-  width: clamp(74px, 8vw, 104px);
+  width: clamp(80px, 8vw, 112px);
   height: auto;
-  margin-bottom: 1.4rem;
-  mix-blend-mode: screen;
+  margin-bottom: 2rem;
+  /* A transparent PNG now, so it needs no blend mode — just a soft gold
+     lift off the navy, which reads as a faint emboss at this size. */
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.28))
+    drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 26px rgba(247, 194, 73, 0.22));
 }
 
+/* The eyebrow is a label, not a headline: it names the man and his class
+   and then gets out of the way of the one thing that should dominate. */
 .eyebrow {
-  font-family: var(--display);
-  font-size: clamp(1.5rem, 1rem + 2.4vw, 2.6rem);
-  font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase;
-  color: var(--ink);
-  margin: 0 0 0.1em;
-}
-
-.hero h1 { margin: 0 0 0.35rem; }
-
-.hero h1 span {
-  display: block;
-  font-weight: 900;
+  font-family: var(--body);
+  font-size: var(--t-micro);
+  font-weight: 700;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  letter-spacing: -0.025em;
+  color: var(--ink-mute);
+  margin: 0 0 1.1rem;
 }
 
-.hero h1 .w { font-size: clamp(2.1rem, 1rem + 5.2vw, 4.1rem); }
-.hero h1 .g { font-size: clamp(3.2rem, 1rem + 9vw, 7rem); line-height: 0.92; }
+.hero h1 { margin: 0 0 1.1rem; }
 
-.idnum {
-  font-family: var(--display);
-  font-size: clamp(1.05rem, 0.9rem + 0.9vw, 1.5rem);
-  font-weight: 800; letter-spacing: 0.09em; color: var(--ink);
-  margin: 0.2rem 0 0.9rem;
-}
+.hero h1 span { display: block; }
 
-.office {
-  display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.55rem;
-  margin: 0 0 1.8rem;
-  padding-top: 1rem;
-  border-top: 2px solid var(--line);
-  font-family: var(--display);
-  text-transform: uppercase; letter-spacing: 0.06em;
+.hero h1 .given {
+  font-size: clamp(1.35rem, 0.9rem + 1.5vw, 2.05rem);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0;
   color: var(--ink-soft);
-  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.2rem);
+  margin-bottom: 0.12em;
+}
+
+.hero h1 .family {
+  font-family: var(--display);
+  font-size: var(--t-hero);
+  font-weight: 900;
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* One supporting line. The office is the message; the association is the
+   accent, and it is the only gold in the hero besides the button. */
+.office {
+  margin: 0 0 2.2rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--line-soft);
+  font-family: var(--serif);
+  font-size: clamp(1.05rem, 0.92rem + 0.6vw, 1.45rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink-soft);
 }
 
 .office strong {
-  color: var(--gold-400);
-  font-size: clamp(1.7rem, 1rem + 3vw, 2.9rem);
-  font-weight: 900; letter-spacing: -0.01em;
+  color: var(--gold);
+  font-weight: 600;
 }
 
-.cta { display: flex; flex-wrap: wrap; gap: 0.85rem; }
+.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.35rem; }
+
+.cta-note {
+  margin: 1.05rem 0 0;
+  font-size: var(--t-small);
+  font-style: italic;
+  font-family: var(--serif);
+  color: var(--ink-mute);
+}
 
 .hero-photo { justify-self: center; width: 100%; }
 
+/* The portrait is lit into the page rather than pasted onto it: a gold rim
+   along the top-left, a wash of presidential blue, and a vignette that
+   settles the edges into the navy behind it. */
 .photo-frame {
   position: relative;
   border-radius: 22px;
-  padding: 10px;
-  background: linear-gradient(150deg, rgba(247, 194, 73, 0.55), rgba(247, 194, 73, 0.05) 45%, rgba(27, 47, 99, 0.4));
+  padding: 1px;
+  background: linear-gradient(150deg,
+    rgba(247, 194, 73, 0.75),
+    rgba(247, 194, 73, 0.06) 38%,
+    rgba(27, 47, 99, 0.55));
   box-shadow: var(--shadow);
+  isolation: isolate;
 }
 
 .photo-frame img {
-  border-radius: 16px;
+  border-radius: 21px;
   width: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.photo-frame::before,
+.photo-frame::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 21px;
+  pointer-events: none;
+}
+
+/* Rim light + blue wash */
+.photo-frame::before {
+  background:
+    linear-gradient(148deg, rgba(255, 232, 176, 0.5) 0%, rgba(255, 232, 176, 0) 22%),
+    linear-gradient(200deg, rgba(27, 47, 99, 0.42), rgba(27, 47, 99, 0.05) 55%);
+  mix-blend-mode: soft-light;
+}
+
+/* Vignette */
+.photo-frame::after {
+  background: radial-gradient(120% 85% at 50% 38%,
+    transparent 42%,
+    rgba(5, 11, 30, 0.34) 82%,
+    rgba(5, 11, 30, 0.62) 100%);
 }
 
 /* Slogan band under the hero */
@@ -318,7 +457,7 @@ p { margin: 0 0 1.1em; }
   margin: 0;
   font-size: clamp(0.72rem, 0.6rem + 0.55vw, 0.95rem);
   letter-spacing: 0.32em; text-transform: uppercase;
-  color: var(--gold-400);
+  color: var(--ink-mute);
 }
 
 /* ── Sections ────────────────────────────────────────────────────────── */
@@ -329,10 +468,17 @@ p { margin: 0 0 1.1em; }
   font-size: 0.76rem; font-weight: 700;
   letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--gold-400);
-  margin: 0 0 0.8rem;
+  margin: 0 0 0.9rem;
+  display: flex; align-items: center; gap: 0.8rem;
 }
 
-.lede { font-size: clamp(1.05rem, 1rem + 0.4vw, 1.28rem); color: var(--ink); }
+.kicker::after {
+  content: "";
+  height: 1px; flex: 1; max-width: 3.5rem;
+  background: var(--line);
+}
+
+.lede { font-size: var(--t-lede); color: var(--ink); line-height: 1.6; }
 
 .note {
   font-size: 0.85rem; color: var(--ink-mute);
@@ -345,6 +491,36 @@ code {
   font-size: 0.88em;
   background: rgba(255, 255, 255, 0.07);
   padding: 0.1em 0.4em; border-radius: 5px;
+}
+
+/* ── Vision ──────────────────────────────────────────────────────────── */
+
+/* Three short beats under the vision prose: why, what, and what is
+   different. Numbered rules rather than cards, so they read as one
+   statement in three parts instead of three competing boxes. */
+.beats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.6rem, 3vw, 2.8rem);
+  margin-top: clamp(2.6rem, 5vw, 3.8rem);
+  padding-top: 2.2rem;
+  border-top: 1px solid var(--line-soft);
+}
+
+.beat p:last-child { margin-bottom: 0; color: var(--ink-soft); }
+
+.beat-label {
+  font-family: var(--body);
+  font-size: var(--t-micro);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+  margin: 0 0 0.75rem;
+}
+
+@media (max-width: 780px) {
+  .beats { grid-template-columns: 1fr; gap: 1.8rem; }
 }
 
 /* ── Pillars ─────────────────────────────────────────────────────────── */
@@ -374,12 +550,16 @@ code {
 
 .pillar .icon { display: block; width: 46px; height: 46px; color: var(--gold-400); margin-bottom: 1rem; }
 .pillar .icon svg { width: 100%; height: 100%; }
-.pillar h3 { text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold-400); }
+.pillar h3 { color: var(--ink); letter-spacing: 0; }
 .pillar p { margin: 0; font-size: 0.96rem; }
 
 /* ── About ───────────────────────────────────────────────────────────── */
 
 .about { background: var(--navy-800); }
+
+/* Held to a reading measure, but anchored to the same left edge as every
+   other section rather than floated to the middle of the page. */
+.about-copy { max-width: 68ch; }
 
 /* The bio is the one long read on the page, so it gets a serif and a little
    more air than the rest of the site. Headings, the creed and the facts list
@@ -389,15 +569,16 @@ code {
   font-family: var(--serif);
   font-size: clamp(1.06rem, 1rem + 0.32vw, 1.2rem);
   line-height: 1.75;
-  max-width: 62ch;
 }
 
 .bio h3 {
-  margin: 2rem 0 0.7rem;
-  font-size: 0.95rem;
+  margin: 2.4rem 0 0.7rem;
+  font-family: var(--body);
+  font-size: 0.82rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--gold-400);
+  letter-spacing: 0.16em;
+  color: var(--ink-mute);
 }
 
 .bio .creed {
@@ -427,8 +608,42 @@ code {
   text-wrap: balance;
 }
 
+/* Closing triad and signature: the bio ends on a statement, then signs it. */
+.signoff {
+  margin: 2.4rem 0 1.6rem;
+  padding: 1.3rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 1rem + 0.6vw, 1.4rem);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink);
+  text-align: center;
+}
+
+.signature {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-align: center;
+}
+
+.signature span {
+  display: block;
+  margin-top: 0.35rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+}
+
 .facts {
-  list-style: none; margin: 2rem 0 0; padding: 0;
+  list-style: none; margin: 2.4rem 0 0; padding: 0;
   display: grid; gap: 0.1rem;
 }
 
@@ -507,7 +722,7 @@ code {
 
 .shot figcaption strong {
   display: block;
-  color: var(--gold-400);
+  color: var(--ink);
   font-size: 0.72rem; font-weight: 800;
   letter-spacing: 0.12em; text-transform: uppercase;
   line-height: 1.3;
@@ -729,7 +944,103 @@ code {
 .credit { margin: 0; font-size: 0.78rem; color: var(--ink-mute); letter-spacing: 0.04em; }
 .credit strong { color: var(--gold-400); font-weight: 700; letter-spacing: 0.06em; }
 
+/* ── Video banner ────────────────────────────────────────────────────── */
+
+/* Full-bleed band inside the Record section: the courts, in use, with the
+   school around them. Silent and looping — it is scenery, not a message,
+   so nothing in it needs sound to be understood. */
+.banner {
+  position: relative;
+  /* Full-bleed without a transform: .reveal animates transform, and would
+     otherwise cancel the centring and shunt the band off to the right. */
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  aspect-ratio: 2.35 / 1;
+  max-height: 62vh;
+  overflow: hidden;
+  background: var(--surface-1);
+  margin-top: clamp(2.4rem, 5vw, 3.6rem);
+  margin-bottom: clamp(2.4rem, 5vw, 3.6rem);
+}
+
+.banner video,
+.banner img.banner-fallback {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Grades the footage into the page: navy at the edges, a gold cast in the
+   light, and enough top/bottom fade that the band has no hard seam. */
+.banner::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, var(--surface-1) 0%, rgba(8, 18, 44, 0) 16%,
+                    rgba(8, 18, 44, 0) 74%, var(--surface-1) 100%),
+    radial-gradient(120% 100% at 50% 50%, rgba(5, 11, 30, 0) 45%, rgba(5, 11, 30, 0.55) 100%),
+    linear-gradient(200deg, rgba(247, 194, 73, 0.10), rgba(27, 47, 99, 0.30));
+}
+
+.banner-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  width: var(--shell);
+  margin-inline: auto;
+  padding-bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 1;
+}
+
+.banner-caption p {
+  margin: 0;
+  font-family: var(--body);
+  font-size: var(--t-micro);
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-shadow: 0 2px 14px rgba(5, 11, 30, 0.9);
+}
+
+@media (max-width: 620px) {
+  .banner { aspect-ratio: 16 / 10; }
+}
+
 /* ── Motion ──────────────────────────────────────────────────────────── */
+
+/* A gold rule that draws itself under each section title as the title
+   arrives. It is the same accent as the kicker above it, so the heading
+   reads as one unit rather than a line stuck on afterwards. */
+.section h2 {
+  position: relative;
+  padding-bottom: 0.42em;
+}
+
+.section h2::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: clamp(64px, 7vw, 96px);
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), rgba(247, 194, 73, 0));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) 0.18s;
+}
+
+.section h2.is-visible::after { transform: scaleX(1); }
+
+/* The crest drifts a little slower than the page. The offset is written by
+   script; the property is declared here so it is always a known quantity. */
+.crest {
+  --crest-shift: 0px;
+  transform: translate3d(0, var(--crest-shift), 0);
+  will-change: transform;
+}
+
+
 
 .reveal {
   opacity: 0;
@@ -739,9 +1050,39 @@ code {
 
 .reveal.is-visible { opacity: 1; transform: none; }
 
+/* Grid children arrive in sequence — enough to read as deliberate, not
+   enough to make anyone wait for the page. */
+.pillar-grid > .reveal:nth-child(2),
+.beats > .reveal:nth-child(2),
+.steps > .reveal:nth-child(2),
+.quote-grid > .reveal:nth-child(2) { transition-delay: 0.07s; }
+
+.pillar-grid > .reveal:nth-child(3),
+.beats > .reveal:nth-child(3),
+.steps > .reveal:nth-child(3),
+.quote-grid > .reveal:nth-child(3) { transition-delay: 0.14s; }
+
+.pillar-grid > .reveal:nth-child(4),
+.steps > .reveal:nth-child(4) { transition-delay: 0.21s; }
+
+.pillar-grid > .reveal:nth-child(5),
+.steps > .reveal:nth-child(5) { transition-delay: 0.28s; }
+
+.steps > .reveal:nth-child(6) { transition-delay: 0.35s; }
+
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
+  /* :nth-child(n) matches the specificity of the stagger rules above, which
+     would otherwise keep their delays even with motion turned down. */
+  .reveal,
+  .pillar-grid > .reveal:nth-child(n),
+  .beats > .reveal:nth-child(n),
+  .steps > .reveal:nth-child(n),
+  .quote-grid > .reveal:nth-child(n) { transition-delay: 0s; }
+  .section h2::after { transform: scaleX(1); transition: none; }
+  .crest { --crest-shift: 0px; transform: none; will-change: auto; }
   * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 

@@ -44,6 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add('is-visible');
+        // Section titles draw their gold rule on arrival. Two of them sit
+        // inside a revealed block rather than carrying .reveal themselves,
+        // so the class is passed down instead of duplicated in the markup.
+        entry.target.querySelectorAll('h2').forEach((h) => h.classList.add('is-visible'));
         io.unobserve(entry.target);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
@@ -51,6 +55,62 @@ document.addEventListener('DOMContentLoaded', () => {
     revealables.forEach((el) => io.observe(el));
   } else {
     revealables.forEach((el) => el.classList.add('is-visible'));
+    document.querySelectorAll('.section h2').forEach((h) => h.classList.add('is-visible'));
+  }
+
+  /* ── Subtle parallax on the hero crest ────────────────────────── */
+
+  /* The crest drifts at a fraction of the scroll speed while the hero is
+     still on screen. Reads as depth rather than movement; anyone who has
+     asked for less motion gets none of it. */
+  const crest = document.querySelector('.hero .crest');
+  const calmer = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (crest && !calmer.matches) {
+    const LIMIT = 26;
+    let ticking = false;
+
+    const place = () => {
+      ticking = false;
+      const y = window.scrollY;
+      if (y > window.innerHeight) return;
+      const shift = Math.min(y * 0.14, LIMIT);
+      crest.style.setProperty('--crest-shift', `${shift.toFixed(1)}px`);
+    };
+
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(place);
+    }, { passive: true });
+
+    place();
+  }
+
+  /* ── Banner video ─────────────────────────────────────────────── */
+
+  /* It is decoration, so it should never fight the reader: paused outright
+     for reduced motion, and paused while off screen so it costs nothing to
+     scroll past. */
+  const banner = document.getElementById('bannerVideo');
+
+  if (banner) {
+    if (calmer.matches) {
+      banner.removeAttribute('autoplay');
+      banner.pause();
+    } else if ('IntersectionObserver' in window) {
+      const bio = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const p = banner.play();
+            if (p && p.catch) p.catch(() => {});
+          } else {
+            banner.pause();
+          }
+        });
+      }, { threshold: 0.15 });
+      bio.observe(banner);
+    }
   }
 
   /* ── Highlight the section you're reading ─────────────────────── */
@@ -75,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Current year in the footer ───────────────────────────────── */
 
-  const yearEl = document.getElementById('year');
+  const yearEl = document.getElementById('copyrightYear');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
   /* ── Pledge form → the visitor's own email client ─────────────── */
