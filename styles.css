@@ -759,6 +759,7 @@ code {
 }
 
 .steps h3 { color: var(--ink); }
+.steps h3:last-child { margin-bottom: 0; }
 .steps p { margin: 0; font-size: 0.96rem; }
 
 /* ── Voices ──────────────────────────────────────────────────────────── */

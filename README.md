@@ -15,8 +15,6 @@ site/
     ├── court.jpg      multipurpose court on the OWASS campus
     ├── boulevard.jpg  the Akatakyie USA Boulevard sign
     ├── campus.jpg     members on campus in Kumasi
-    ├── chapter.jpg    a chapter gathering
-    ├── reunion.jpg    a reunion group photograph
     └── gala.jpg       a fundraising dinner
 ```
 
@@ -34,16 +32,14 @@ Everything below is a placeholder. Nothing on the page invents facts about the c
 
 1. **Campaign email** — `campaign@example.org` appears twice: in `script.js`
    (`CAMPAIGN_EMAIL`, where the pledge form sends) and in the footer of `index.html`.
-2. **The first hundred days** — the six commitments in the *Plan* section are a sensible
-   draft, not the campaign's manifesto. Replace them with the real platform.
-3. **Endorsements** — three empty slots in the *Voices* section. Only publish quotes the
+2. **Endorsements** — three empty slots in the *Voices* section. Only publish quotes the
    person has agreed to in writing.
-4. **Delete the two grey `.note` lines** (in *Plan* and *Voices*) once the content is real —
+3. **Delete the two grey `.note` lines** (in *Plan* and *Voices*) once the content is real —
    they are editing reminders, not page copy.
-5. **Gallery captions** — the six photographs in the *Record* section are captioned by occasion,
+4. **Gallery captions** — the photographs in the *Record* section are captioned by occasion,
    not by person, because nobody has confirmed who is in each frame. Add names, dates and places
    once the campaign can verify them.
-6. **The crest** — still a crop out of the campaign poster, so it is soft at large sizes. Swap
+5. **The crest** — still a crop out of the campaign poster, so it is soft at large sizes. Swap
    in a clean crest file if you have one.
 
 ## Build
