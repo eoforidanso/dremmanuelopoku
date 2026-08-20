@@ -58,6 +58,43 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.section h2').forEach((h) => h.classList.add('is-visible'));
   }
 
+  /* ── Photographs that never arrived ───────────────────────────── */
+
+  /* A fast scroll can leave a lazily loaded photograph's request cancelled,
+     and the browser does not ask again on its own — the card is left blank
+     with only its caption. So ask once more: when the request fails, and
+     when a card has been on screen a while with nothing in it. */
+
+  const photos = [...document.querySelectorAll('.shot img')];
+
+  const askAgain = (img) => {
+    if (img.dataset.retried) return;
+    img.dataset.retried = 'true';
+    const { src } = img;
+    img.removeAttribute('src');
+    img.src = src;
+  };
+
+  photos.forEach((img) => img.addEventListener('error', () => askAgain(img)));
+
+  if ('IntersectionObserver' in window) {
+    const pio = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const img = entry.target;
+        pio.unobserve(img);
+        // Long enough that a photograph still arriving over a slow
+        // connection is left alone; short enough to fix a blank card
+        // before the reader has scrolled past it.
+        setTimeout(() => {
+          if (!img.complete || img.naturalWidth === 0) askAgain(img);
+        }, 6000);
+      });
+    }, { rootMargin: '200px 0px' });
+
+    photos.forEach((img) => pio.observe(img));
+  }
+
   /* ── Subtle parallax on the hero crest ────────────────────────── */
 
   /* The crest drifts at a fraction of the scroll speed while the hero is

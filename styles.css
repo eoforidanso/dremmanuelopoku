@@ -707,7 +707,14 @@ code {
   flex: none;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  /* Holds the card's shape in brand colour while the photograph is still
+     on its way, rather than a bright empty rectangle. */
+  background: var(--surface-2);
 }
+
+/* Tall photographs whose subject sits high in the frame: hold the top of
+   the picture rather than its middle, so heads survive the 4:3 crop. */
+.shot img.hold-top { object-position: 50% 30%; }
 
 .shot.wide img { aspect-ratio: 16 / 9; }
 
