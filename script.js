@@ -170,6 +170,64 @@ document.addEventListener('DOMContentLoaded', () => {
     sections.forEach((section) => spy.observe(section));
   }
 
+  /* ── Pillar letters: tabs ─────────────────────────────────────── */
+
+  /* Standard tab pattern: one tab in the tab order, arrows move between the
+     rest. Without JavaScript every panel but the first stays hidden, so the
+     markup keeps the overview letter visible on its own. */
+
+  const tabWrap = document.getElementById('pillarTabs');
+
+  if (tabWrap) {
+    const tabs = [...tabWrap.querySelectorAll('[role="tab"]')];
+
+    const show = (tab, { focus = true } = {}) => {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls'));
+        if (!panel) return;
+        panel.hidden = !on;
+        panel.classList.toggle('is-active', on);
+      });
+      if (focus) tab.focus();
+    };
+
+    tabWrap.addEventListener('click', (e) => {
+      const tab = e.target.closest('[role="tab"]');
+      if (tab) show(tab);
+    });
+
+    tabWrap.addEventListener('keydown', (e) => {
+      const i = tabs.indexOf(document.activeElement);
+      if (i === -1) return;
+
+      const to = {
+        ArrowRight: i + 1,
+        ArrowLeft: i - 1,
+        Home: 0,
+        End: tabs.length - 1,
+      }[e.key];
+
+      if (to === undefined) return;
+      e.preventDefault();
+      show(tabs[(to + tabs.length) % tabs.length]);
+    });
+
+    // A link straight to a pillar — #pillar-growth and the like — opens that
+    // letter instead of the overview.
+    const fromHash = () => {
+      const id = window.location.hash.replace('#pillar-', '');
+      const tab = id && document.getElementById(`tab-${id}`);
+      if (tab && tabs.includes(tab)) show(tab, { focus: false });
+    };
+
+    fromHash();
+    window.addEventListener('hashchange', fromHash);
+  }
+
   /* ── Current year in the footer ───────────────────────────────── */
 
   const yearEl = document.getElementById('copyrightYear');
