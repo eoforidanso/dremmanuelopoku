@@ -555,104 +555,162 @@ code {
 
 /* ── Pillar letters (tabbed) ─────────────────────────────────────────── */
 
-/* The candidate's own writing, one letter per tab. The tabs are the only
-   interactive control on the page that changes what is on screen, so they
-   are drawn as a rail of numbered choices rather than as buttons. */
+/* The candidate's own writing, one letter per tab. Two ideas carry the
+   section: the tabs sit inside a single track so they read as one control
+   rather than five loose pills, and each letter is signed on the left by the
+   pillar it belongs to, leaving the text itself at a reading measure. */
 
 .letters { background: var(--navy-800); }
 
 .tabs { margin-top: clamp(2rem, 4vw, 2.8rem); }
 
+/* The track. It stays with the reader while a long letter scrolls, and on a
+   narrow screen it scrolls sideways rather than breaking into ragged rows —
+   a half-visible pill at the edge is the invitation to swipe. */
+.tabrail {
+  position: sticky;
+  top: 84px;
+  z-index: 5;
+  padding: 0.4rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: rgba(12, 26, 61, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), var(--shadow);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabrail::-webkit-scrollbar { display: none; }
+
 .tablist {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding-bottom: 1.4rem;
-  border-bottom: 1px solid var(--line-soft);
+  justify-content: space-between;
+  gap: 0.2rem;
+  width: 100%;
+  min-width: max-content;
 }
 
 .tab {
+  position: relative;
   display: inline-flex;
   align-items: baseline;
-  gap: 0.6rem;
+  gap: 0.55rem;
+  flex: 0 0 auto;
   min-height: 48px;
-  padding: 0 1.15rem;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid var(--line-soft);
+  padding: 0 1.25rem;
+  background: none;
+  border: 0;
   border-radius: 999px;
   color: var(--ink-soft);
   font-family: var(--body);
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  white-space: nowrap;
   cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  scroll-snap-align: center;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
-.tab:hover { border-color: var(--line); color: var(--ink); transform: translateY(-2px); }
+.tab:hover { color: var(--ink); background: rgba(255, 255, 255, 0.05); }
 
 .tab .tab-num {
   font-size: var(--t-micro);
   letter-spacing: 0.14em;
-  color: var(--ink-mute);
-  transition: color 0.2s ease;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.65;
 }
 
 .tab.is-active {
   background: linear-gradient(160deg, var(--gold-400), var(--gold-600));
-  border-color: transparent;
   color: var(--on-gold);
-  box-shadow: 0 14px 30px -18px rgba(237, 169, 44, 0.9);
+  box-shadow: 0 10px 20px -14px rgba(237, 169, 44, 0.9);
 }
 
-.tab.is-active .tab-num { color: rgba(33, 22, 10, 0.62); }
+.tab.is-active .tab-num { opacity: 0.72; }
 
-/* One letter is a long read, so it takes the serif and the measure the
-   biography uses. The panel keeps a floor height so switching tabs does not
-   jump the page when a short letter follows a long one. */
+/* ── One letter ──────────────────────────────────────────────────────── */
+
 .tabpanel {
-  max-width: 68ch;
-  min-height: 24rem;
-  margin-top: clamp(1.8rem, 3.5vw, 2.4rem);
-  font-family: var(--serif);
-  font-size: clamp(1.06rem, 1rem + 0.32vw, 1.2rem);
-  line-height: 1.75;
-  animation: letter-in 0.35s ease both;
+  display: grid;
+  gap: clamp(1.4rem, 3vw, 2rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  animation: letter-in 0.4s ease both;
 }
 
 .tabpanel[hidden] { display: none; }
 
 @keyframes letter-in {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: none; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .tabpanel { animation: none; }
-  .tab:hover { transform: none; }
+/* The pillar signs its own letter: a numeral in outline, the name, and the
+   place it holds in the sequence. It rides along on wide screens. */
+.letter-mark {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  column-gap: 0.9rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--line-soft);
 }
 
-.letter-eyebrow {
+.letter-no {
+  font-family: var(--display);
+  font-size: clamp(2.6rem, 1.6rem + 3vw, 4.2rem);
+  font-weight: 800;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(247, 194, 73, 0.62);
+}
+
+.letter-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: var(--t-2);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.letter-strap {
+  grid-column: 2;
+  margin: 0.25rem 0 0;
   font-family: var(--body);
   font-size: var(--t-micro);
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold-400);
-  margin: 0 0 0.9rem;
 }
+
+.letter-body {
+  max-width: 64ch;
+  font-family: var(--serif);
+  font-size: clamp(1.06rem, 1rem + 0.32vw, 1.2rem);
+  line-height: 1.75;
+}
+
+.letter-body > p:last-child { margin-bottom: 0; }
 
 .salutation { color: var(--ink); font-style: italic; }
 
 .letter-head {
-  margin: 2rem 0 0.7rem;
-  font-family: var(--body);
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--ink-mute);
+  margin: 2.4rem 0 1.2rem;
+  font-family: var(--serif);
+  font-size: 1.32em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
 
 .letter-list {
@@ -675,30 +733,74 @@ code {
   background: var(--gold-400);
 }
 
-/* The four pillars named in the overview, numbered in the accent so the
-   list reads as the campaign's spine rather than as ordinary copy. */
-.pillar-list {
-  margin: 0 0 1.1em;
-  padding: 0;
-  list-style: none;
+/* The two legacy projects are a pair of named commitments, so they are set
+   as such rather than as two more paragraphs. */
+.projects { margin: 0 0 1.2em; }
+
+.projects dt {
+  margin-top: 1.5rem;
+  font-family: var(--body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+  margin-bottom: 0.35rem;
 }
 
-.pillar-list li {
+.projects dd {
+  margin: 0 0 1.4rem;
+  padding-left: 1.1rem;
+  border-left: 1px solid var(--line);
+}
+
+.projects dt:first-child { margin-top: 0; }
+.projects dd:last-child { margin-bottom: 0; }
+
+/* The four pillars named in the overview double as a way into them. */
+.pillar-list {
+  margin: 0 0 1.3em;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-soft);
+}
+
+.pillar-list li { border-bottom: 1px solid var(--line-soft); }
+
+.pillar-list button {
   display: flex;
-  align-items: baseline;
-  gap: 0.8rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--line-soft);
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  min-height: 52px;
+  padding: 0.35rem 0.6rem 0.35rem 0;
+  background: none;
+  border: 0;
+  color: var(--ink);
   font-family: var(--display);
   font-size: 0.95rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease, padding 0.2s ease;
 }
 
-.pillar-list li:last-child { border-bottom: 0; }
-.pillar-list .n { color: var(--gold-400); }
+.pillar-list button::after {
+  content: "";
+  width: 8px; height: 8px;
+  margin-left: auto;
+  border-right: 1.5px solid currentColor;
+  border-top: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.pillar-list button:hover { color: var(--gold-400); padding-left: 0.5rem; }
+.pillar-list button:hover::after { opacity: 1; }
+.pillar-list .n { color: var(--gold-400); font-variant-numeric: tabular-nums; }
 
 .letter-chain,
 .letter-close {
@@ -706,16 +808,102 @@ code {
   font-weight: 600;
 }
 
+.letter-chain {
+  font-style: italic;
+  font-size: 1.12em;
+  line-height: 1.5;
+}
+
 .letter-close {
-  margin-top: 1.4rem;
-  padding-top: 1.1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
   border-top: 1px solid var(--line);
 }
 
-@media (max-width: 560px) {
-  .tablist { gap: 0.4rem; }
-  .tab { padding: 0 0.9rem; font-size: 0.78rem; }
-  .tabpanel { min-height: 0; }
+/* Reading on: the sequence is the argument, so each letter offers the next. */
+.letter-next { margin-top: 2.2rem; }
+
+.jump {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.85rem 3rem 0.9rem 1.2rem;
+  position: relative;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.jump::after {
+  content: "";
+  position: absolute;
+  right: 1.2rem; top: 50%;
+  width: 9px; height: 9px;
+  margin-top: -5px;
+  border-right: 1.5px solid var(--gold-400);
+  border-top: 1.5px solid var(--gold-400);
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.jump:hover {
+  transform: translateY(-2px);
+  border-color: var(--line);
+  background: rgba(247, 194, 73, 0.06);
+}
+
+.jump:hover::after { transform: rotate(45deg) translate(2px, -2px); }
+
+.jump-label {
+  font-family: var(--body);
+  font-size: var(--t-micro);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+}
+
+.jump-name {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+/* Wide enough for the letter to be signed in the margin. */
+@media (min-width: 960px) {
+  .tabpanel {
+    grid-template-columns: 200px minmax(0, 64ch);
+    column-gap: clamp(2.4rem, 5vw, 4rem);
+    min-height: 30rem;
+  }
+
+  .letter-mark {
+    position: sticky;
+    top: 160px;
+    align-self: start;
+    grid-template-columns: 1fr;
+    padding-bottom: 1.3rem;
+  }
+
+  .letter-strap { grid-column: 1; }
+  .letter-title { margin-top: 0.7rem; }
+}
+
+@media (max-width: 620px) {
+  .tabrail { border-radius: 26px; }
+  .tab { padding: 0 1rem; font-size: 0.78rem; }
+  .jump { padding-right: 2.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabpanel { animation: none; }
+  .jump:hover { transform: none; }
+  .pillar-list button:hover { padding-left: 0; }
+  .tabrail { scroll-behavior: auto; }
 }
 
 /* ── About ───────────────────────────────────────────────────────────── */

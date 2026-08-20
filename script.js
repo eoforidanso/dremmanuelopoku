@@ -180,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (tabWrap) {
     const tabs = [...tabWrap.querySelectorAll('[role="tab"]')];
+    const rail = tabWrap.querySelector('.tabrail');
 
     const show = (tab, { focus = true } = {}) => {
       tabs.forEach((t) => {
@@ -192,6 +193,14 @@ document.addEventListener('DOMContentLoaded', () => {
         panel.hidden = !on;
         panel.classList.toggle('is-active', on);
       });
+
+      // On a narrow screen the track scrolls, so the chosen tab is brought
+      // into the track rather than left off the side of it.
+      if (rail && rail.scrollWidth > rail.clientWidth) {
+        const move = tab.offsetLeft - (rail.clientWidth - tab.offsetWidth) / 2;
+        rail.scrollTo({ left: move, behavior: calmer.matches ? 'auto' : 'smooth' });
+      }
+
       if (focus) tab.focus();
     };
 
@@ -216,6 +225,22 @@ document.addEventListener('DOMContentLoaded', () => {
       show(tabs[(to + tabs.length) % tabs.length]);
     });
 
+    /* The overview's list of pillars, and the "read next" card at the foot of
+       every letter, open a tab from inside the panel. The track is left at the
+       top of the view so the reader starts the new letter at its first line. */
+    tabWrap.addEventListener('click', (e) => {
+      const jump = e.target.closest('[data-goto]');
+      if (!jump) return;
+      const tab = document.getElementById(jump.dataset.goto);
+      if (!tab || !tabs.includes(tab)) return;
+
+      show(tab, { focus: false });
+
+      const top = tabWrap.getBoundingClientRect().top + window.scrollY - 90;
+      window.scrollTo({ top, behavior: calmer.matches ? 'auto' : 'smooth' });
+      tab.focus({ preventScroll: true });
+    });
+
     // A link straight to a pillar — #pillar-growth and the like — opens that
     // letter instead of the overview.
     const fromHash = () => {
@@ -226,6 +251,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fromHash();
     window.addEventListener('hashchange', fromHash);
+
+    // On a narrow screen the track is scrolled, so whichever letter is open
+    // starts with its tab in view rather than off the side.
+    const centreActive = () => {
+      const tab = tabs.find((t) => t.classList.contains('is-active'));
+      if (!rail || !tab || rail.scrollWidth <= rail.clientWidth) return;
+      rail.scrollLeft = tab.offsetLeft - (rail.clientWidth - tab.offsetWidth) / 2;
+    };
+
+    centreActive();
+    window.addEventListener('resize', centreActive);
   }
 
   /* ── Current year in the footer ───────────────────────────────── */
