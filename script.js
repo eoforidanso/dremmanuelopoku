@@ -2,7 +2,7 @@
    No dependencies, no analytics, no data leaves the visitor's device. */
 
 // Where pledges are sent. Replace with the campaign's real inbox.
-const CAMPAIGN_EMAIL = 'campaign@example.org';
+const CAMPAIGN_EMAIL = 'Opokboath@gmail.com';
 
 document.addEventListener('DOMContentLoaded', () => {
   const nav = document.getElementById('nav');
