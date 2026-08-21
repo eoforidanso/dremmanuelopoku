@@ -60,7 +60,24 @@
 
   --shell: min(1180px, 100% - 2.5rem);
   --radius: 18px;
-  --shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.9);
+
+  /* ── Material ──────────────────────────────────────────────────────
+     One glass, lit from above. A surface is a tint, a hairline edge, a
+     specular line along its top, and a shadow in two parts: a tight
+     contact shadow that sits it on the page, and a wide ambient one that
+     gives it height. Depth comes from those, never from a heavier tint. */
+  --glass:        rgba(255, 255, 255, 0.055);
+  --glass-raised: rgba(255, 255, 255, 0.085);
+  --glass-edge:   rgba(255, 255, 255, 0.12);
+  --sheen:        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --sheen-strong: inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  --blur: blur(20px) saturate(160%);
+
+  --lift-1: 0 1px 2px rgba(2, 6, 18, 0.4), 0 10px 24px -14px rgba(2, 6, 18, 0.85);
+  --lift-2: 0 2px 5px rgba(2, 6, 18, 0.45), 0 22px 46px -22px rgba(2, 6, 18, 0.95);
+  --lift-3: 0 4px 10px rgba(2, 6, 18, 0.5), 0 44px 80px -34px rgba(2, 6, 18, 1);
+
+  --shadow: var(--lift-2);
 
   color-scheme: dark;
 }
@@ -78,6 +95,22 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* Two soft pools of light behind everything, fixed so they do not travel
+   with the page. Without them translucent surfaces have nothing to refract
+   and glass reads as flat grey. Sections above are tinted, not opaque, so
+   this shows faintly through. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10% -10% 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 44% at 14% 4%, rgba(88, 128, 232, 0.20), transparent 66%),
+    radial-gradient(52% 40% at 92% 26%, rgba(247, 194, 73, 0.10), transparent 64%),
+    radial-gradient(70% 50% at 44% 104%, rgba(27, 47, 99, 0.55), transparent 72%);
 }
 
 img { max-width: 100%; height: auto; display: block; }
@@ -129,16 +162,26 @@ p { margin: 0 0 1.1em; }
 
 .nav {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(5, 11, 30, 0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(5, 11, 30, 0.62);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
   border-bottom: 1px solid transparent;
+  box-shadow: none;
   transition: background 0.25s ease, border-color 0.25s ease;
 }
 
 .nav.is-stuck {
-  background: rgba(5, 11, 30, 0.94);
+  background: rgba(5, 11, 30, 0.78);
   border-bottom-color: var(--line);
+  box-shadow: var(--sheen), 0 18px 40px -30px rgba(2, 6, 18, 1);
+}
+
+/* Where the backdrop cannot be blurred, the bar earns its legibility with
+   opacity instead. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .nav { background: rgba(5, 11, 30, 0.94); }
+  .nav.is-stuck { background: rgba(5, 11, 30, 0.98); }
+  .tabrail { background: rgba(12, 26, 61, 0.95); }
 }
 
 .nav-inner {
@@ -215,6 +258,10 @@ p { margin: 0 0 1.1em; }
 .nav-menu a.btn.is-active {
   color: var(--on-gold);
   letter-spacing: 0.06em;
+  /* `.nav-menu a` sets `padding: 0.45rem 0`, and it out-specifies .btn-sm —
+     which left the pill with no side padding at all and its label touching
+     both ends. The pill states its own padding here, where it wins. */
+  padding: 0 1.5rem;
 }
 
 .nav-toggle {
@@ -252,16 +299,51 @@ p { margin: 0 0 1.1em; }
   transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 
+/* Lit from directly above: a bright edge along the top, the body of the
+   gold falling away beneath it, a dark seam at the bottom where it meets
+   its own shadow. Pressing it puts the light out and sits it down. */
 .btn-gold {
-  background: linear-gradient(160deg, var(--gold-400), var(--gold-600));
+  background: linear-gradient(180deg, #fbd478 0%, var(--gold-400) 42%, var(--gold-600) 100%);
   color: var(--on-gold);
-  box-shadow: 0 14px 30px -16px rgba(237, 169, 44, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 252, 240, 0.62),
+    inset 0 -1px 0 rgba(94, 60, 6, 0.28),
+    0 1px 2px rgba(2, 6, 18, 0.4),
+    0 12px 26px -14px rgba(237, 169, 44, 0.85);
 }
 
-.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 20px 36px -16px rgba(237, 169, 44, 0.95); }
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 252, 240, 0.75),
+    inset 0 -1px 0 rgba(94, 60, 6, 0.28),
+    0 2px 4px rgba(2, 6, 18, 0.45),
+    0 20px 38px -16px rgba(237, 169, 44, 0.95);
+}
 
-.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
-.btn-ghost:hover { border-color: var(--gold-400); color: var(--gold-400); transform: translateY(-2px); }
+.btn-gold:active {
+  transform: translateY(1px) scale(0.995);
+  background: linear-gradient(180deg, var(--gold-500) 0%, var(--gold-600) 100%);
+  box-shadow:
+    inset 0 2px 5px rgba(94, 60, 6, 0.34),
+    0 1px 2px rgba(2, 6, 18, 0.5);
+}
+
+.btn-ghost {
+  background: var(--glass);
+  border-color: var(--glass-edge);
+  color: var(--ink);
+  box-shadow: var(--sheen), var(--lift-1);
+}
+
+.btn-ghost:hover {
+  border-color: var(--gold-400);
+  color: var(--gold-400);
+  transform: translateY(-2px);
+  box-shadow: var(--sheen-strong), var(--lift-2);
+}
+
+.btn-ghost:active { transform: translateY(1px); box-shadow: var(--lift-1); }
 
 /* The secondary action sits beside the primary without competing with it:
    no pill, no border — a text link with a rule that fills in on hover. */
@@ -408,7 +490,7 @@ p { margin: 0 0 1.1em; }
     rgba(247, 194, 73, 0.75),
     rgba(247, 194, 73, 0.06) 38%,
     rgba(27, 47, 99, 0.55));
-  box-shadow: var(--shadow);
+  box-shadow: var(--lift-3);
   isolation: isolate;
 }
 
@@ -533,7 +615,7 @@ code {
 
 /* ── Pillars ─────────────────────────────────────────────────────────── */
 
-.pillars { background: linear-gradient(180deg, var(--navy-900), var(--navy-800)); }
+.pillars { background: linear-gradient(180deg, rgba(5, 11, 30, 0.82), rgba(8, 18, 44, 0.82)); }
 
 .pillar-grid {
   display: grid;
@@ -543,17 +625,20 @@ code {
 }
 
 .pillar {
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid var(--line-soft);
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--radius);
   padding: 1.6rem 1.35rem;
-  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  box-shadow: var(--sheen), var(--lift-1);
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.3, 1),
+              border-color 0.25s ease, background 0.25s ease, box-shadow 0.3s ease;
 }
 
 .pillar:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   border-color: var(--line);
-  background: rgba(247, 194, 73, 0.06);
+  background: var(--glass-raised);
+  box-shadow: var(--sheen-strong), var(--lift-3);
 }
 
 .pillar .icon { display: block; width: 46px; height: 46px; color: var(--gold-400); margin-bottom: 1rem; }
@@ -568,7 +653,7 @@ code {
    rather than five loose pills, and each letter is signed on the left by the
    pillar it belongs to, leaving the text itself at a reading measure. */
 
-.letters { background: var(--navy-800); }
+.letters { background: rgba(8, 18, 44, 0.82); }
 
 .tabs { margin-top: clamp(2rem, 4vw, 2.8rem); }
 
@@ -582,12 +667,12 @@ code {
   /* The side padding has to clear the track's own curve: a pill sitting 4px
      in from a 999px corner gets its edge sliced off by the overflow clip. */
   padding: 0.4rem 1rem;
-  border: 1px solid var(--line-soft);
+  border: 1px solid var(--glass-edge);
   border-radius: 999px;
-  background: rgba(12, 26, 61, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), var(--shadow);
+  background: rgba(12, 26, 61, 0.66);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  box-shadow: var(--sheen), var(--lift-2);
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
@@ -644,9 +729,13 @@ code {
 .tab .tab-name { line-height: 1; }
 
 .tab.is-active {
-  background: linear-gradient(160deg, var(--gold-400), var(--gold-600));
+  background: linear-gradient(180deg, #fbd478 0%, var(--gold-400) 44%, var(--gold-600) 100%);
   color: var(--on-gold);
-  box-shadow: 0 10px 20px -14px rgba(237, 169, 44, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 252, 240, 0.6),
+    inset 0 -1px 0 rgba(94, 60, 6, 0.26),
+    0 1px 2px rgba(2, 6, 18, 0.35),
+    0 10px 20px -14px rgba(237, 169, 44, 0.9);
 }
 
 .tab.is-active .tab-num { opacity: 0.72; }
@@ -846,12 +935,14 @@ code {
   gap: 0.15rem;
   padding: 0.85rem 3rem 0.9rem 1.2rem;
   position: relative;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid var(--line-soft);
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
   border-radius: 14px;
+  box-shadow: var(--sheen), var(--lift-1);
   text-align: left;
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.3, 1),
+              border-color 0.2s ease, background 0.2s ease, box-shadow 0.25s ease;
 }
 
 .jump::after {
@@ -869,8 +960,11 @@ code {
 .jump:hover {
   transform: translateY(-2px);
   border-color: var(--line);
-  background: rgba(247, 194, 73, 0.06);
+  background: rgba(247, 194, 73, 0.07);
+  box-shadow: var(--sheen-strong), var(--lift-2);
 }
+
+.jump:active { transform: translateY(1px); box-shadow: var(--lift-1); }
 
 .jump:hover::after { transform: rotate(45deg) translate(2px, -2px); }
 
@@ -920,11 +1014,21 @@ code {
   .jump:hover { transform: none; }
   .pillar-list button:hover { padding-left: 0; }
   .tabrail { scroll-behavior: auto; }
+
+  /* Depth is fine; travel is not. Surfaces still light up on hover, they
+     just do not move to do it. */
+  .pillar:hover,
+  .shot:hover,
+  .steps li:hover,
+  .btn-gold:hover,
+  .btn-ghost:hover,
+  .btn-gold:active,
+  .btn-ghost:active { transform: none; }
 }
 
 /* ── About ───────────────────────────────────────────────────────────── */
 
-.about { background: var(--navy-800); }
+.about { background: rgba(8, 18, 44, 0.82); }
 
 /* Held to a reading measure, but anchored to the same left edge as every
    other section rather than floated to the middle of the page. */
@@ -1090,7 +1194,7 @@ code {
 
 /* ── Record ──────────────────────────────────────────────────────────── */
 
-.record { background: linear-gradient(180deg, var(--navy-800), var(--navy-900)); }
+.record { background: linear-gradient(180deg, rgba(8, 18, 44, 0.82), rgba(5, 11, 30, 0.82)); }
 
 .gallery {
   display: grid;
@@ -1103,14 +1207,20 @@ code {
   margin: 0;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--line-soft);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.035);
+  background: var(--glass);
+  box-shadow: var(--sheen), var(--lift-1);
   overflow: hidden;
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.3, 1),
+              border-color 0.25s ease, box-shadow 0.3s ease;
 }
 
-.shot:hover { transform: translateY(-4px); border-color: var(--line); }
+.shot:hover {
+  transform: translateY(-5px);
+  border-color: var(--line);
+  box-shadow: var(--sheen-strong), var(--lift-3);
+}
 
 .shot.wide { grid-column: 1 / -1; }
 
@@ -1151,7 +1261,7 @@ code {
 
 /* ── Plan ────────────────────────────────────────────────────────────── */
 
-.plan { background: linear-gradient(180deg, var(--navy-800), var(--navy-900)); }
+.plan { background: linear-gradient(180deg, rgba(8, 18, 44, 0.82), rgba(5, 11, 30, 0.82)); }
 
 .steps {
   list-style: none; padding: 0;
@@ -1164,10 +1274,14 @@ code {
 .steps li {
   position: relative;
   padding: 1.7rem 1.4rem 1.5rem;
-  border: 1px solid var(--line-soft);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--glass);
+  box-shadow: var(--sheen), var(--lift-1);
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.3s ease;
 }
+
+.steps li:hover { transform: translateY(-4px); box-shadow: var(--sheen-strong), var(--lift-2); }
 
 .steps .num {
   display: block;
@@ -1199,7 +1313,7 @@ code {
 
 /* ── Join ────────────────────────────────────────────────────────────── */
 
-.join { background: linear-gradient(180deg, var(--navy-900), var(--navy-700)); }
+.join { background: linear-gradient(180deg, rgba(5, 11, 30, 0.8), rgba(12, 26, 61, 0.8)); }
 
 .join-grid {
   display: grid;
@@ -1222,11 +1336,13 @@ code {
 }
 
 .join-form {
-  background: rgba(5, 11, 30, 0.55);
-  border: 1px solid var(--line);
+  background: rgba(8, 18, 44, 0.5);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--radius);
   padding: clamp(1.3rem, 3vw, 2rem);
-  box-shadow: var(--shadow);
+  box-shadow: var(--sheen-strong), var(--lift-3);
   display: grid; gap: 1rem;
 }
 
@@ -1247,16 +1363,23 @@ code {
   width: 100%;
   min-height: 48px;
   padding: 0.7rem 0.85rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--line-soft);
+  background: rgba(2, 6, 18, 0.32);
+  border: 1px solid var(--glass-edge);
   border-radius: 11px;
+  box-shadow: inset 0 1px 3px rgba(2, 6, 18, 0.55);
   color: var(--ink);
   font: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .field textarea { min-height: 110px; resize: vertical; }
 
-.field input:focus, .field textarea:focus { border-color: var(--gold-400); outline: none; box-shadow: 0 0 0 3px rgba(247, 194, 73, 0.2); }
+.field input:focus, .field textarea:focus {
+  border-color: var(--gold-400);
+  outline: none;
+  background: rgba(2, 6, 18, 0.2);
+  box-shadow: inset 0 1px 3px rgba(2, 6, 18, 0.4), 0 0 0 3px rgba(247, 194, 73, 0.22);
+}
 
 .field input[aria-invalid="true"] { border-color: #ff8b7a; }
 
@@ -1514,7 +1637,7 @@ code {
 @media (max-width: 1040px) {
   .nav-menu { gap: 1.35rem; }
   .nav-menu a { font-size: 0.78rem; letter-spacing: 0.1em; }
-  .nav-menu a.btn-sm { padding: 0 1.1rem; }
+  .nav-menu a.btn-sm { padding: 0 1.2rem; }
 }
 
 @media (max-width: 900px) {
