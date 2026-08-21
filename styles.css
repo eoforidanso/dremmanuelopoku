@@ -608,7 +608,10 @@ code {
 .tab {
   position: relative;
   display: inline-flex;
-  align-items: baseline;
+  /* Centred, not baseline-aligned: in a box with a min-height, baseline
+     alignment parks the label at the top and leaves the pill hanging below
+     it. Matching line-heights keep the numeral and the name on one line. */
+  align-items: center;
   gap: 0.55rem;
   flex: 0 0 auto;
   min-height: 48px;
@@ -632,10 +635,13 @@ code {
 
 .tab .tab-num {
   font-size: var(--t-micro);
+  line-height: 1;
   letter-spacing: 0.14em;
   font-variant-numeric: tabular-nums;
   opacity: 0.65;
 }
+
+.tab .tab-name { line-height: 1; }
 
 .tab.is-active {
   background: linear-gradient(160deg, var(--gold-400), var(--gold-600));
