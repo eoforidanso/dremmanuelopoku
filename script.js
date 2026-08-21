@@ -9,6 +9,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.getElementById('navToggle');
   const menu = document.getElementById('navMenu');
 
+  /* ── Day / night toggle ───────────────────────────────────────── */
+
+  const themeToggle = document.getElementById('themeToggle');
+
+  if (themeToggle) {
+    const isLight = () => document.documentElement.getAttribute('data-theme') === 'light';
+
+    const syncToggle = () => themeToggle.setAttribute('aria-pressed', String(isLight()));
+    syncToggle();
+
+    themeToggle.addEventListener('click', () => {
+      const next = isLight() ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      syncToggle();
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {
+        // Private browsing or a full storage quota — the toggle still
+        // works for the rest of this visit, it just will not be remembered.
+      }
+    });
+  }
+
   /* ── Mobile menu ──────────────────────────────────────────────── */
 
   const closeMenu = () => {

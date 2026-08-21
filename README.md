@@ -66,5 +66,7 @@ or Cloudflare Pages. Point the campaign's domain at it afterwards.
 - The pledge form has no backend. It opens the visitor's own email app with the details
   filled in, so no member data is stored on the site. If you would rather collect submissions
   in a spreadsheet, swap the form for a Formspree, Netlify Forms or Google Form endpoint.
-- The design commits to the poster's dark navy in both light and dark system themes.
+- The site defaults to the poster's dark navy regardless of OS theme. A day/night toggle in
+  the nav lets a visitor opt into a light palette instead; the choice is remembered
+  (`localStorage`) and applied before first paint, so it never flashes the other theme.
 - Reduced-motion, keyboard focus, skip link and 48px touch targets are all handled.

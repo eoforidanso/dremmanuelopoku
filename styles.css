@@ -79,7 +79,81 @@
 
   --shadow: var(--lift-2);
 
+  /* Panel washes: the same three navy tones used everywhere a section or
+     bar needs a translucent tint rather than a flat surface — bar
+     backdrops, gradient wipes between sections, the tabrail. Held as bare
+     triplets so each rule keeps its own alpha and only the hue swaps with
+     the theme. */
+  --scrim-0-rgb:    5, 11, 30;
+  --scrim-1-rgb:    8, 18, 44;
+  --scrim-2-rgb:    12, 26, 61;
+  --accent-wash-rgb: 27, 47, 99;
+
+  /* Recessed form fields: dark enough to read as a well cut into the glass
+     panel behind them. */
+  --field-bg:          rgba(2, 6, 18, 0.32);
+  --field-bg-focus:    rgba(2, 6, 18, 0.2);
+  --field-shadow:      inset 0 1px 3px rgba(2, 6, 18, 0.55);
+  --field-shadow-focus: inset 0 1px 3px rgba(2, 6, 18, 0.4);
+
+  --error:        #ffb2a6;
+  --error-border: #ff8b7a;
+
   color-scheme: dark;
+}
+
+/* ── Light theme ─────────────────────────────────────────────────────────
+   Opt-in via the toggle in the nav — the site still defaults to the poster's
+   navy. Only the tokens that carry colour move; type, spacing and every
+   component built on them follow without their own overrides. A few
+   literal, non-token spots (the crest's screen blend, the video banner's
+   grade) are handled with their own small overrides further down, since
+   swapping the tokens alone would wash them out or reverse their point. */
+:root[data-theme="light"] {
+  --surface-0: #f4f7fd;
+  --surface-1: #eceff8;
+  --surface-2: #e2e7f4;
+  --surface-3: #d5ddef;
+  --surface-4: #c3cfe8;
+
+  /* The bright poster gold reads at well under 2:1 on paper — nowhere near
+     text contrast — so every place gold sits directly on the page (labels,
+     links, icons, hover states) needs a deeper tone here. Gold used as a
+     *fill* with dark text already on top of it (buttons, the power band)
+     points at var(--gold) instead, so it stays untouched by this. */
+  --gold-400: #8a5c0a;
+
+  --ink:      var(--navy);
+  --ink-soft: rgba(5, 11, 30, 0.76);
+  --ink-mute: rgba(5, 11, 30, 0.54);
+
+  --line:      rgba(178, 132, 21, 0.35);
+  --line-soft: rgba(5, 11, 30, 0.12);
+
+  --glass:        rgba(5, 11, 30, 0.035);
+  --glass-raised: rgba(5, 11, 30, 0.06);
+  --glass-edge:   rgba(5, 11, 30, 0.12);
+  --sheen:        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --sheen-strong: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+
+  --lift-1: 0 1px 2px rgba(5, 11, 30, 0.08), 0 10px 24px -14px rgba(5, 11, 30, 0.16);
+  --lift-2: 0 2px 5px rgba(5, 11, 30, 0.08), 0 22px 46px -22px rgba(5, 11, 30, 0.18);
+  --lift-3: 0 4px 10px rgba(5, 11, 30, 0.1), 0 44px 80px -34px rgba(5, 11, 30, 0.2);
+
+  --scrim-0-rgb:     244, 247, 253;
+  --scrim-1-rgb:     237, 240, 249;
+  --scrim-2-rgb:     229, 234, 246;
+  --accent-wash-rgb: 205, 217, 244;
+
+  --field-bg:           rgba(5, 11, 30, 0.04);
+  --field-bg-focus:     rgba(5, 11, 30, 0.02);
+  --field-shadow:       inset 0 1px 2px rgba(5, 11, 30, 0.14);
+  --field-shadow-focus: inset 0 1px 2px rgba(5, 11, 30, 0.1);
+
+  --error:        #b3261e;
+  --error-border: #c94f3f;
+
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; }
@@ -110,7 +184,7 @@ body::before {
   background:
     radial-gradient(58% 44% at 14% 4%, rgba(88, 128, 232, 0.20), transparent 66%),
     radial-gradient(52% 40% at 92% 26%, rgba(247, 194, 73, 0.10), transparent 64%),
-    radial-gradient(70% 50% at 44% 104%, rgba(27, 47, 99, 0.55), transparent 72%);
+    radial-gradient(70% 50% at 44% 104%, rgba(var(--accent-wash-rgb), 0.55), transparent 72%);
 }
 
 img { max-width: 100%; height: auto; display: block; }
@@ -148,7 +222,7 @@ p { margin: 0 0 1.1em; }
 .skip:focus {
   position: fixed; inset: 12px auto auto 12px;
   z-index: 100;
-  background: var(--gold-400); color: var(--navy-900);
+  background: var(--gold); color: var(--on-gold);
   padding: 0.6rem 1rem; border-radius: 10px; font-weight: 700;
 }
 
@@ -162,7 +236,7 @@ p { margin: 0 0 1.1em; }
 
 .nav {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(5, 11, 30, 0.62);
+  background: rgba(var(--scrim-0-rgb), 0.62);
   backdrop-filter: var(--blur);
   -webkit-backdrop-filter: var(--blur);
   border-bottom: 1px solid transparent;
@@ -171,7 +245,7 @@ p { margin: 0 0 1.1em; }
 }
 
 .nav.is-stuck {
-  background: rgba(5, 11, 30, 0.78);
+  background: rgba(var(--scrim-0-rgb), 0.78);
   border-bottom-color: var(--line);
   box-shadow: var(--sheen), 0 18px 40px -30px rgba(2, 6, 18, 1);
 }
@@ -179,25 +253,38 @@ p { margin: 0 0 1.1em; }
 /* Where the backdrop cannot be blurred, the bar earns its legibility with
    opacity instead. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .nav { background: rgba(5, 11, 30, 0.94); }
-  .nav.is-stuck { background: rgba(5, 11, 30, 0.98); }
-  .tabrail { background: rgba(12, 26, 61, 0.95); }
+  .nav { background: rgba(var(--scrim-0-rgb), 0.94); }
+  .nav.is-stuck { background: rgba(var(--scrim-0-rgb), 0.98); }
+  .tabrail { background: rgba(var(--scrim-2-rgb), 0.95); }
 }
 
 .nav-inner {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center;
   gap: 1rem; min-height: 72px;
 }
 
 .brand {
   display: flex; align-items: center; gap: 0.7rem;
   text-decoration: none; color: var(--ink);
+  /* Everything after the brand — the theme toggle, the menu button, the
+     link row — is one cluster pinned to the right, rather than the brand
+     and menu being pushed to opposite edges with a third item stranded
+     between them. */
+  margin-right: auto;
 }
 
 .brand img {
   width: 40px; height: 42px;
   object-fit: contain;
   mix-blend-mode: screen;
+}
+
+/* Screen brightens the crest's dark linework into the navy behind it; on
+   a light page the same blend would wash it out instead, so the light
+   theme just draws the PNG as-is. */
+[data-theme="light"] .brand img,
+[data-theme="light"] .footer-brand img {
+  mix-blend-mode: normal;
 }
 
 .brand strong {
@@ -287,6 +374,28 @@ p { margin: 0 0 1.1em; }
 .nav-toggle[aria-expanded="true"] .bars::before { transform: translateY(6px) rotate(45deg); }
 .nav-toggle[aria-expanded="true"] .bars::after { transform: translateY(-6px) rotate(-45deg); }
 
+/* Day / night toggle. Same footprint as the menu button beside it, so the
+   two read as one family of controls rather than a mismatched pair. */
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: none;
+  width: 46px; height: 46px;
+  background: transparent; border: 1px solid var(--line);
+  border-radius: 12px; color: var(--ink); cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-toggle:hover { border-color: var(--gold-400); color: var(--gold-400); }
+
+.theme-toggle svg { width: 20px; height: 20px; }
+
+/* The dark theme shows a moon (this is the mode you're in); switching
+   shows a sun. Both icons are always in the DOM so the swap has nothing
+   to load or flash. */
+.theme-toggle .icon-sun { display: none; }
+[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
 /* ── Buttons ─────────────────────────────────────────────────────────── */
 
 .btn {
@@ -303,7 +412,11 @@ p { margin: 0 0 1.1em; }
    gold falling away beneath it, a dark seam at the bottom where it meets
    its own shadow. Pressing it puts the light out and sits it down. */
 .btn-gold {
-  background: linear-gradient(180deg, #fbd478 0%, var(--gold-400) 42%, var(--gold-600) 100%);
+  /* var(--gold), not var(--gold-400): this fill has dark text sitting on
+     top of it, so it stays full brand gold in both themes rather than
+     following --gold-400 into the deeper, text-safe tone light mode uses
+     for gold-on-page contexts. */
+  background: linear-gradient(180deg, #fbd478 0%, var(--gold) 42%, var(--gold-600) 100%);
   color: var(--on-gold);
   box-shadow:
     inset 0 1px 0 rgba(255, 252, 240, 0.62),
@@ -381,7 +494,7 @@ p { margin: 0 0 1.1em; }
 .hero {
   position: relative;
   background:
-    radial-gradient(80% 60% at 78% 22%, rgba(27, 47, 99, 0.85), transparent 65%),
+    radial-gradient(80% 60% at 78% 22%, rgba(var(--accent-wash-rgb), 0.85), transparent 65%),
     radial-gradient(60% 50% at 10% 10%, rgba(237, 169, 44, 0.12), transparent 70%),
     linear-gradient(180deg, var(--navy-800), var(--navy-900));
   overflow: hidden;
@@ -489,7 +602,7 @@ p { margin: 0 0 1.1em; }
   background: linear-gradient(150deg,
     rgba(247, 194, 73, 0.75),
     rgba(247, 194, 73, 0.06) 38%,
-    rgba(27, 47, 99, 0.55));
+    rgba(var(--accent-wash-rgb), 0.55));
   box-shadow: var(--lift-3);
   isolation: isolate;
 }
@@ -514,7 +627,7 @@ p { margin: 0 0 1.1em; }
 .photo-frame::before {
   background:
     linear-gradient(148deg, rgba(255, 232, 176, 0.5) 0%, rgba(255, 232, 176, 0) 22%),
-    linear-gradient(200deg, rgba(27, 47, 99, 0.42), rgba(27, 47, 99, 0.05) 55%);
+    linear-gradient(200deg, rgba(var(--accent-wash-rgb), 0.42), rgba(var(--accent-wash-rgb), 0.05) 55%);
   mix-blend-mode: soft-light;
 }
 
@@ -522,8 +635,8 @@ p { margin: 0 0 1.1em; }
 .photo-frame::after {
   background: radial-gradient(120% 85% at 50% 38%,
     transparent 42%,
-    rgba(5, 11, 30, 0.34) 82%,
-    rgba(5, 11, 30, 0.62) 100%);
+    rgba(var(--scrim-0-rgb), 0.34) 82%,
+    rgba(var(--scrim-0-rgb), 0.62) 100%);
 }
 
 /* Slogan band under the hero */
@@ -531,7 +644,7 @@ p { margin: 0 0 1.1em; }
 .slogan-band {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(8, 18, 44, 0.9), rgba(5, 11, 30, 0.95));
+  background: linear-gradient(180deg, rgba(var(--scrim-1-rgb), 0.9), rgba(var(--scrim-0-rgb), 0.95));
   text-align: center;
   padding: clamp(1.4rem, 3vw, 2.2rem) 0;
 }
@@ -579,7 +692,7 @@ p { margin: 0 0 1.1em; }
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.88em;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--glass);
   padding: 0.1em 0.4em; border-radius: 5px;
 }
 
@@ -615,7 +728,7 @@ code {
 
 /* ── Pillars ─────────────────────────────────────────────────────────── */
 
-.pillars { background: linear-gradient(180deg, rgba(5, 11, 30, 0.82), rgba(8, 18, 44, 0.82)); }
+.pillars { background: linear-gradient(180deg, rgba(var(--scrim-0-rgb), 0.82), rgba(var(--scrim-1-rgb), 0.82)); }
 
 .pillar-grid {
   display: grid;
@@ -653,7 +766,7 @@ code {
    rather than five loose pills, and each letter is signed on the left by the
    pillar it belongs to, leaving the text itself at a reading measure. */
 
-.letters { background: rgba(8, 18, 44, 0.82); }
+.letters { background: rgba(var(--scrim-1-rgb), 0.82); }
 
 .tabs { margin-top: clamp(2rem, 4vw, 2.8rem); }
 
@@ -669,7 +782,7 @@ code {
   padding: 0.4rem 1rem;
   border: 1px solid var(--glass-edge);
   border-radius: 999px;
-  background: rgba(12, 26, 61, 0.66);
+  background: rgba(var(--scrim-2-rgb), 0.66);
   backdrop-filter: var(--blur);
   -webkit-backdrop-filter: var(--blur);
   box-shadow: var(--sheen), var(--lift-2);
@@ -716,7 +829,7 @@ code {
   transition: color 0.2s ease, background 0.2s ease;
 }
 
-.tab:hover { color: var(--ink); background: rgba(255, 255, 255, 0.05); }
+.tab:hover { color: var(--ink); background: var(--glass); }
 
 .tab .tab-num {
   font-size: var(--t-micro);
@@ -729,7 +842,7 @@ code {
 .tab .tab-name { line-height: 1; }
 
 .tab.is-active {
-  background: linear-gradient(180deg, #fbd478 0%, var(--gold-400) 44%, var(--gold-600) 100%);
+  background: linear-gradient(180deg, #fbd478 0%, var(--gold) 44%, var(--gold-600) 100%);
   color: var(--on-gold);
   box-shadow:
     inset 0 1px 0 rgba(255, 252, 240, 0.6),
@@ -1028,7 +1141,7 @@ code {
 
 /* ── About ───────────────────────────────────────────────────────────── */
 
-.about { background: rgba(8, 18, 44, 0.82); }
+.about { background: rgba(var(--scrim-1-rgb), 0.82); }
 
 /* Held to a reading measure, but anchored to the same left edge as every
    other section rather than floated to the middle of the page. */
@@ -1194,7 +1307,7 @@ code {
 
 /* ── Record ──────────────────────────────────────────────────────────── */
 
-.record { background: linear-gradient(180deg, rgba(8, 18, 44, 0.82), rgba(5, 11, 30, 0.82)); }
+.record { background: linear-gradient(180deg, rgba(var(--scrim-1-rgb), 0.82), rgba(var(--scrim-0-rgb), 0.82)); }
 
 /* Only the phone rail announces itself. */
 .swipe-hint {
@@ -1273,7 +1386,7 @@ code {
 
 /* ── Plan ────────────────────────────────────────────────────────────── */
 
-.plan { background: linear-gradient(180deg, rgba(8, 18, 44, 0.82), rgba(5, 11, 30, 0.82)); }
+.plan { background: linear-gradient(180deg, rgba(var(--scrim-1-rgb), 0.82), rgba(var(--scrim-0-rgb), 0.82)); }
 
 .steps {
   list-style: none; padding: 0;
@@ -1325,7 +1438,7 @@ code {
 
 /* ── Join ────────────────────────────────────────────────────────────── */
 
-.join { background: linear-gradient(180deg, rgba(5, 11, 30, 0.8), rgba(12, 26, 61, 0.8)); }
+.join { background: linear-gradient(180deg, rgba(var(--scrim-0-rgb), 0.8), rgba(var(--scrim-2-rgb), 0.8)); }
 
 .join-grid {
   display: grid;
@@ -1348,7 +1461,7 @@ code {
 }
 
 .join-form {
-  background: rgba(8, 18, 44, 0.5);
+  background: rgba(var(--scrim-1-rgb), 0.5);
   backdrop-filter: var(--blur);
   -webkit-backdrop-filter: var(--blur);
   border: 1px solid var(--glass-edge);
@@ -1375,10 +1488,10 @@ code {
   width: 100%;
   min-height: 48px;
   padding: 0.7rem 0.85rem;
-  background: rgba(2, 6, 18, 0.32);
+  background: var(--field-bg);
   border: 1px solid var(--glass-edge);
   border-radius: 11px;
-  box-shadow: inset 0 1px 3px rgba(2, 6, 18, 0.55);
+  box-shadow: var(--field-shadow);
   color: var(--ink);
   font: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
@@ -1389,11 +1502,11 @@ code {
 .field input:focus, .field textarea:focus {
   border-color: var(--gold-400);
   outline: none;
-  background: rgba(2, 6, 18, 0.2);
-  box-shadow: inset 0 1px 3px rgba(2, 6, 18, 0.4), 0 0 0 3px rgba(247, 194, 73, 0.22);
+  background: var(--field-bg-focus);
+  box-shadow: var(--field-shadow-focus), 0 0 0 3px rgba(247, 194, 73, 0.22);
 }
 
-.field input[aria-invalid="true"] { border-color: #ff8b7a; }
+.field input[aria-invalid="true"] { border-color: var(--error-border); }
 
 .checks {
   border: 0; padding: 0; margin: 0;
@@ -1412,7 +1525,7 @@ code {
 .checks input { width: 19px; height: 19px; accent-color: var(--gold-500); }
 
 .form-note { margin: 0; font-size: 0.84rem; color: var(--ink-mute); text-align: center; }
-.form-note.is-error { color: #ffb2a6; }
+.form-note.is-error { color: var(--error); }
 .form-note.is-ok { color: var(--gold-400); }
 
 /* ── Power banner ────────────────────────────────────────────────────── */
@@ -1425,7 +1538,7 @@ code {
 
 .power-band {
   display: inline-block;
-  background: linear-gradient(160deg, var(--gold-400), var(--gold-600));
+  background: linear-gradient(160deg, var(--gold), var(--gold-600));
   color: #1d1305;
   font-family: var(--display);
   font-size: clamp(1.5rem, 0.8rem + 3.4vw, 3.2rem);
@@ -1563,7 +1676,10 @@ code {
   font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--ink);
+  /* Fixed rather than var(--ink): the grade above is always dark navy at
+     the edges regardless of theme, so the caption stays the paper colour
+     that reads against it instead of following the page to navy text. */
+  color: var(--paper);
   text-shadow: 0 2px 14px rgba(5, 11, 30, 0.9);
 }
 
@@ -1687,7 +1803,7 @@ code {
     position: absolute; inset: 100% 0 auto;
     display: grid; gap: 0.25rem;
     padding: 1rem 1.25rem 1.5rem;
-    background: rgba(5, 11, 30, 0.98);
+    background: rgba(var(--scrim-0-rgb), 0.98);
     border-bottom: 1px solid var(--line);
     transform-origin: top;
     transform: scaleY(0);

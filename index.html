@@ -18,6 +18,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&display=swap">
 <link rel="stylesheet" href="styles.css">
+<script>
+  // Applied before first paint so a returning visitor's choice never
+  // flashes the other theme. No stored choice means no attribute at all,
+  // which leaves the page on its default navy — the toggle only ever
+  // opts a visitor *into* light, it does not follow the OS setting.
+  try {
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  } catch (e) {}
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -31,6 +43,16 @@
         <em>for Akatakyie USA</em>
       </span>
     </a>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">
+      <svg class="icon-sun" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+      </svg>
+      <svg class="icon-moon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path>
+      </svg>
+      <span class="sr">Toggle day and night theme</span>
+    </button>
     <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu">
       <span class="bars" aria-hidden="true"></span>
       <span class="sr">Menu</span>
