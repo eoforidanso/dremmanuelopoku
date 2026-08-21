@@ -948,6 +948,49 @@ code {
   color: var(--ink);
 }
 
+/* The life story behind the candidacy, kept one click away so the case for
+   it reads first. Same words, same order — only folded. */
+.more {
+  margin: 2.4rem 0;
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.more summary {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 60px;
+  padding-right: 0.2rem;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.2s ease;
+}
+
+.more summary::-webkit-details-marker { display: none; }
+.more summary:hover { color: var(--ink); }
+
+.more summary::after {
+  content: "";
+  width: 9px; height: 9px;
+  margin-left: auto;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-3px) rotate(45deg);
+  transition: transform 0.25s ease;
+}
+
+.more[open] summary::after { transform: translateY(1px) rotate(-135deg); }
+
+.more-body { padding-bottom: 0.8rem; }
+.more-body > h3:first-of-type { margin-top: 1.6rem; }
+
 .pull {
   margin: 1.4rem 0 0;
   padding-left: 1.1rem;
