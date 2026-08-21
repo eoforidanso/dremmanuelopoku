@@ -1663,7 +1663,16 @@ code {
 
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
-  .hero-photo { order: -1; max-width: 380px; }
+  .hero-photo { order: -1; max-width: 380px; margin-inline: auto; }
+
+  /* On a single stacked column the hero reads as a poster, so the crest,
+     name and call to action are centred rather than pinned to a left
+     edge that no longer means anything without the photo beside it. */
+  .hero-copy { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .crest { margin-inline: auto; }
+  .office { max-width: 30rem; }
+  .cta { justify-content: center; }
+
   .join-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: repeat(2, 1fr); }
   .shot.wide { grid-column: span 2; }
