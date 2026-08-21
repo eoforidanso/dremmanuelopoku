@@ -1,0 +1,17 @@
+{
+  // Serves the built site from Cloudflare Workers. Workers Builds runs
+  // `npx wrangler deploy`, which reads this file: it runs build.sh to produce
+  // dist/, then uploads dist/ as the Worker's static assets. dist/ is
+  // gitignored, so it has to be built here rather than committed.
+  //
+  // `name` must match the Worker in the dashboard — a different name would
+  // create a second, empty Worker instead of updating this one.
+  "name": "dremmanuelopoku",
+  "compatibility_date": "2026-08-20",
+  "build": {
+    "command": "./build.sh"
+  },
+  "assets": {
+    "directory": "./dist"
+  }
+}

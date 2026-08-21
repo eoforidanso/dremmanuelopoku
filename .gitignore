@@ -2,3 +2,6 @@
 dist/
 node_modules/
 *.log
+
+# Local wrangler state — account cache, not project config.
+.wrangler/
