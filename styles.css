@@ -159,6 +159,7 @@ p { margin: 0 0 1.1em; }
 
 .brand strong {
   display: block;
+  white-space: nowrap;
   font-family: var(--display);
   font-size: 1.15rem; font-weight: 800; letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -166,14 +167,21 @@ p { margin: 0 0 1.1em; }
 
 .brand em {
   display: block;
+  white-space: nowrap;
   font-style: normal; font-size: 0.72rem; letter-spacing: 0.16em;
   text-transform: uppercase; color: var(--gold-400);
 }
 
-.nav-menu { display: flex; align-items: center; gap: 2.15rem; }
+.nav-menu { display: flex; align-items: center; flex-wrap: nowrap; gap: 2.15rem; }
 
+/* Nothing in the bar may break mid-label: a wrapped link is what pushed the
+   pill's text out past its own edge. Items keep their natural width and the
+   gap gives way first — and when even that is not enough, the menu button
+   takes over at the breakpoint below. */
 .nav-menu a {
   position: relative;
+  flex: 0 0 auto;
+  white-space: nowrap;
   color: var(--ink-soft); text-decoration: none;
   font-size: 0.82rem; font-weight: 600; letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -571,7 +579,9 @@ code {
   position: sticky;
   top: 84px;
   z-index: 5;
-  padding: 0.4rem;
+  /* The side padding has to clear the track's own curve: a pill sitting 4px
+     in from a 999px corner gets its edge sliced off by the overflow clip. */
+  padding: 0.4rem 1rem;
   border: 1px solid var(--line-soft);
   border-radius: 999px;
   background: rgba(12, 26, 61, 0.82);
@@ -1492,6 +1502,15 @@ code {
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
 
+/* Six items, a brand lockup and a pill: between the full bar and the menu
+   button there is a band where it all only just fits. The gap closes up
+   there rather than letting anything crowd the pill. */
+@media (max-width: 1040px) {
+  .nav-menu { gap: 1.35rem; }
+  .nav-menu a { font-size: 0.78rem; letter-spacing: 0.1em; }
+  .nav-menu a.btn-sm { padding: 0 1.1rem; }
+}
+
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
   .hero-photo { order: -1; max-width: 380px; }
@@ -1500,7 +1519,7 @@ code {
   .shot.wide { grid-column: span 2; }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   html { scroll-padding-top: 76px; }
 
   .nav-toggle { display: inline-flex; }
