@@ -13,5 +13,13 @@
   },
   "assets": {
     "directory": "./dist"
-  }
+  },
+  // Declaring the domains here means the deploy creates the custom domain and
+  // writes the DNS record itself — the zone is on the same Cloudflare account,
+  // so nothing needs doing by hand. www serves the same site; the canonical
+  // link in index.html points both at the apex.
+  "routes": [
+    { "pattern": "thepowerofus.us", "custom_domain": true },
+    { "pattern": "www.thepowerofus.us", "custom_domain": true }
+  ]
 }
