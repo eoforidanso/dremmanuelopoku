@@ -1196,6 +1196,18 @@ code {
 
 .record { background: linear-gradient(180deg, rgba(8, 18, 44, 0.82), rgba(5, 11, 30, 0.82)); }
 
+/* Only the phone rail announces itself. */
+.swipe-hint {
+  display: none;
+  margin: 0 0 0.8rem;
+  font-family: var(--body);
+  font-size: var(--t-micro);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
 .gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1690,7 +1702,33 @@ code {
 }
 
 @media (max-width: 560px) {
-  .gallery { grid-template-columns: 1fr; }
-  .shot.wide { grid-column: auto; }
+  /* Thirteen photographs stacked one per row ran to nearly six screens —
+     a third of the whole page. On a phone they become a rail you swipe
+     instead, the same gesture the pillar tabs use, with the next card
+     peeking in as the invitation. */
+  .swipe-hint { display: block; }
+
+  .gallery {
+    display: flex;
+    gap: 0.8rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+
+  .gallery::-webkit-scrollbar { display: none; }
+
+  .shot,
+  .shot.wide {
+    flex: 0 0 84%;
+    grid-column: auto;
+    scroll-snap-align: center;
+  }
+
+  .shot:hover { transform: none; }
+  .shot img,
   .shot.wide img { aspect-ratio: 4 / 3; }
 }
